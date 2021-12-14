@@ -1,16 +1,63 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --tw-clr-primary-400: 0, 224, 243;
+  --tw-clr-primary-500: 0, 196, 253;
+
+  --clr-primary-400: rgb(var(--tw-clr-primary-400)); /* #00e0f3 */
+  --clr-primary-500: rgb(var(--tw-clr-primary-500)); /* #00c4fd */
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+@layer base {
+  h1 {
+    @apply text-2xl font-bold md:text-4xl font-pro;
+  }
+
+  h2 {
+    @apply text-xl font-bold md:text-3xl font-pro;
+  }
+
+  h3 {
+    @apply text-lg font-bold md:text-2xl font-pro;
+  }
+
+  h4 {
+    @apply text-base font-bold md:text-lg font-pro;
+  }
+
+  body {
+    @apply text-sm font-pro md:text-base;
+  }
+
+  .layout {
+    /* 750px */
+    /* max-width: 43.75rem; */
+
+    /* 1100px */
+    max-width: 68.75rem;
+    @apply w-11/12 mx-auto;
+  }
+
+  .bg-dark a.custom-link {
+    @apply border-gray-200 hover:border-gray-200/0;
+  }
+
+  /* Class to adjust with sticky footer */
+  .min-h-main {
+    @apply min-h-[calc(100vh-80px)];
+  }
 }
 
-* {
-  box-sizing: border-box;
+@layer components {
+  .main {
+    @apply py-20 flex flex-col;
+  }
+  .footer {
+    @apply w-full h-20 flex justify-center items-center bg-gray-50 m-auto border-t border-solid border-gray-100;
+  }
+  .footer-logo {
+    @apply h-4;
+  }
 }
