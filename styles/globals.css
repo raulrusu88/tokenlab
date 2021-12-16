@@ -2,17 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --tw-clr-primary-400: 0, 224, 243;
-  --tw-clr-primary-500: 0, 196, 253;
-
-  --clr-primary-400: rgb(var(--tw-clr-primary-400)); /* #00e0f3 */
-  --clr-primary-500: rgb(var(--tw-clr-primary-500)); /* #00c4fd */
-}
-
 @layer base {
   h1 {
-    @apply text-2xl font-bold md:text-4xl font-pro;
+    @apply text-2xl font-bold md:text-4xl font-pro text-text;
   }
 
   h2 {
@@ -30,24 +22,9 @@
   body {
     @apply text-sm font-pro md:text-base bg-primary;
   }
-
-  .layout {
-    /* 1100px */
-    max-width: 68.75rem;
-    @apply max-w-7xl mx-auto;
-  }
-
-  .bg-dark a.custom-link {
-    @apply border-gray-200 hover:border-gray-200/0;
-  }
-
-  /* Class to adjust with sticky footer */
-  .min-h-main {
-    @apply min-h-[calc(100vh-80px)];
-  }
 }
 
-@layer components {
+/* @layer components {
   .main {
     @apply py-20 flex flex-col;
   }
@@ -56,5 +33,5 @@
   }
   .footer-logo {
     @apply h-4;
-  }
-}
+  } */
+/* } */
