@@ -20,7 +20,7 @@
   }
 
   body {
-    @apply text-sm font-pro md:text-base bg-primary;
+    @apply text-sm font-pro md:text-base bg-primary overflow-x-hidden;
   }
 }
 

@@ -41,10 +41,14 @@ const Table = ({ children }: ChildProp) => (
   <table className="text-text w-full grid-cols-tableRow mt-5">{children}</table>
 );
 
-const TableRow = ({ children }: ChildProp) => <tr className="">{children}</tr>;
+const TableRow = ({ children }: ChildProp) => (
+  <tr className="border-b-2 border-b-primary/25">{children}</tr>
+);
 
 const TableHead = ({ text }: TextProp) => <th>{text}</th>;
 
-const TableData = ({ children }: ChildProp) => <td>{children}</td>;
+const TableData = ({ children }: ChildProp) => (
+  <td className="text-center py-3">{children}</td>
+);
 
 export { Layout, Header, Title, Search, Table, TableRow, TableHead, TableData };
