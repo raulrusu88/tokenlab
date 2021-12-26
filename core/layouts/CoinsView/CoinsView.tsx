@@ -1,4 +1,5 @@
-import { ReactNode, FC } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { useState } from "react";
 import { Line } from "../../components/Line";
 import * as CV from "./styles";
 
@@ -22,6 +23,13 @@ interface CoinProps {
 }
 
 export const CoinsView = ({ data }: CoinProps) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleModalButton = () =>
+    console.log(
+      "modal button should open with some current data for the specific table row"
+    );
+
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -41,7 +49,7 @@ export const CoinsView = ({ data }: CoinProps) => {
   const abbreviateNumber = (number: any) => {
     if (number === 0) return number;
 
-    let numberFixed;
+    let numberFixed: number | string;
 
     const tier = SI_PREFIXES.filter((n) => number >= n.value).pop();
     if (tier) {
@@ -81,11 +89,36 @@ export const CoinsView = ({ data }: CoinProps) => {
               <CV.TableData>{volume24h(d.quote.USD.volume_24h)}</CV.TableData>
               <CV.TableData>1</CV.TableData>
               <CV.TableData>$200</CV.TableData>
-              <CV.TableData>YES</CV.TableData>
+              <CV.TableData>
+                <button onClick={handleModalButton}>OPEN</button>
+              </CV.TableData>
             </CV.TableRow>
           ))}
         </CV.Table>
       </CV.Layout>
     </div>
+  );
+};
+
+const CoinModal = ({ open = false, coin }: { open: boolean; coin: ICMC }) => {
+  console.log(coin.name);
+
+  return (
+    <Dialog
+      open={open}
+      onClose={() => !open}
+      className="fixed z-10 inset-0 overflow-y-auto"
+    >
+      <div className="flex items-center justify-center min-h-screen">
+        <Dialog.Overlay className="fixed inset-0 bg-primary/50" />
+        <div className="relative bg-secondary rounded max-w-md mx-auto text-text px-4 py-4">
+          <Dialog.Title>Current progression</Dialog.Title>
+          <Dialog.Description className="mt-2">
+            Here are some of the features that need to be implemented or are.
+          </Dialog.Description>
+          <div className="flex flex-col"></div>
+        </div>
+      </div>
+    </Dialog>
   );
 };
