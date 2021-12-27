@@ -2,6 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { useState } from "react";
 import { Line } from "../../components/Line";
 import * as CV from "./styles";
+import { useAuth } from "../../context/AuthContext";
 
 interface ICMC {
   id: number;
@@ -23,12 +24,9 @@ interface CoinProps {
 }
 
 export const CoinsView = ({ data }: CoinProps) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { isAuthenticated } = useAuth();
 
-  const handleModalButton = () =>
-    console.log(
-      "modal button should open with some current data for the specific table row"
-    );
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -58,8 +56,8 @@ export const CoinsView = ({ data }: CoinProps) => {
     return `${numberFixed}${tier?.symbol}`;
   };
 
-  const price = (x) => formatter.format(parseFloat(x));
-  const volume24h = (x) => abbreviateNumber(parseFloat(x));
+  const price = (x: number) => formatter.format(parseFloat(x.toString()));
+  const volume24h = (x: number) => abbreviateNumber(parseFloat(x.toString()));
 
   return (
     <div className="mt-12">
@@ -70,55 +68,54 @@ export const CoinsView = ({ data }: CoinProps) => {
         </CV.Header>
         <Line />
         <CV.Table>
-          <CV.TableRow>
-            <CV.TableHead text="#" />
-            <CV.TableHead text="Name" />
-            <CV.TableHead text="Price" />
-            <CV.TableHead text="24H Change(%)" />
-            <CV.TableHead text="24H Volume(USD)" />
-            <CV.TableHead text="Leverage" />
-            <CV.TableHead text="Amount(USD)" />
-            <CV.TableHead text="Long/Short" />
-          </CV.TableRow>
-          {data.map((d) => (
-            <CV.TableRow key={d.id}>
-              <CV.TableData>{d.cmc_rank}</CV.TableData>
-              <CV.TableData>{d.name}</CV.TableData>
-              <CV.TableData>{price(d.quote.USD.price)}</CV.TableData>
-              <CV.TableData>{d.quote.USD.volume_change_24h}</CV.TableData>
-              <CV.TableData>{volume24h(d.quote.USD.volume_24h)}</CV.TableData>
-              <CV.TableData>1</CV.TableData>
-              <CV.TableData>$200</CV.TableData>
-              <CV.TableData>
-                <button onClick={handleModalButton}>OPEN</button>
-              </CV.TableData>
+          <thead>
+            <CV.TableRow>
+              <CV.TableHead text="#" />
+              <CV.TableHead text="Name" />
+              <CV.TableHead text="Price" />
+              <CV.TableHead text="24H Change(%)" />
+              <CV.TableHead text="24H Volume(USD)" />
+              <CV.TableHead text="Leverage" />
+              <CV.TableHead text="Amount(USD)" />
+              {isAuthenticated && <CV.TableHead text="Long/Short" />}
             </CV.TableRow>
-          ))}
+          </thead>
+          <tbody>
+            {data.map((d) => (
+              <CV.TableRow key={d.id}>
+                <CV.TableData>{d.cmc_rank}</CV.TableData>
+                <CV.TableData>{d.name}</CV.TableData>
+                <CV.TableData>{price(d.quote.USD.price)}</CV.TableData>
+                <CV.TableData>{d.quote.USD.volume_change_24h}</CV.TableData>
+                <CV.TableData>{volume24h(d.quote.USD.volume_24h)}</CV.TableData>
+                {/* THis should be an input field, that is seen only when the user is Authenticated */}
+                <CV.TableData>1</CV.TableData>
+                {/* THis should be an input field, that is seen only when the user is Authenticated */}
+                <CV.TableData>$200</CV.TableData>
+                {isAuthenticated && (
+                  <CV.TableData>
+                    <CoinButton data={d} id={d.id} />
+                  </CV.TableData>
+                )}
+              </CV.TableRow>
+            ))}
+          </tbody>
         </CV.Table>
       </CV.Layout>
     </div>
   );
 };
 
-const CoinModal = ({ open = false, coin }: { open: boolean; coin: ICMC }) => {
-  console.log(coin.name);
-
+const CoinButton = ({ id, data }: { id?: string | number; data?: ICMC }) => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (id === data.id) {
+      console.log(data);
+    }
+  };
   return (
-    <Dialog
-      open={open}
-      onClose={() => !open}
-      className="fixed z-10 inset-0 overflow-y-auto"
-    >
-      <div className="flex items-center justify-center min-h-screen">
-        <Dialog.Overlay className="fixed inset-0 bg-primary/50" />
-        <div className="relative bg-secondary rounded max-w-md mx-auto text-text px-4 py-4">
-          <Dialog.Title>Current progression</Dialog.Title>
-          <Dialog.Description className="mt-2">
-            Here are some of the features that need to be implemented or are.
-          </Dialog.Description>
-          <div className="flex flex-col"></div>
-        </div>
-      </div>
-    </Dialog>
+    <>
+      <button onClick={handleClick}>CLICK</button>
+    </>
   );
 };

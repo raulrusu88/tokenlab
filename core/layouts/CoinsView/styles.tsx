@@ -1,4 +1,4 @@
-import { ReactNode, CSSProperties } from "react";
+import { ReactNode } from "react";
 
 type ChildProp = {
   children: ReactNode;
@@ -41,8 +41,13 @@ const Table = ({ children }: ChildProp) => (
   <table className="text-text w-full grid-cols-tableRow mt-5">{children}</table>
 );
 
-const TableRow = ({ children }: ChildProp) => (
-  <tr className="border-b-2 border-b-primary/25">{children}</tr>
+const TableRow = ({
+  children,
+  onClick,
+}: ChildProp & { onClick?: () => void }) => (
+  <tr className="border-b-2 border-b-primary/25" onClick={onClick}>
+    {children}
+  </tr>
 );
 
 const TableHead = ({ text }: TextProp) => <th>{text}</th>;
