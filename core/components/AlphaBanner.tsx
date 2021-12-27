@@ -41,6 +41,7 @@ export const AlphaBanner = () => {
               <div className="flex flex-col">
                 <Checkbox checkbox text="Google Sign Up / Sign In" />
                 <Checkbox checkbox text="CMC Api with live data" />
+                <Checkbox text="Moving from CMC -> CoinGecko" />
                 <Checkbox text="WS implementation for live-ish data" />
                 <Checkbox text="Show each crypto correct logo" />
                 <Checkbox text="User dashboard / portfolio" />
