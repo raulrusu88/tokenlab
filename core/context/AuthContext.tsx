@@ -5,14 +5,15 @@ import {
   useCallback,
   useState,
   ReactNode,
+  useMemo,
 } from "react";
-import { useUser } from "@auth0/nextjs-auth0";
+import { useAuth0, User } from "@auth0/auth0-react";
 
 interface IAuthContext {
-  user?: any;
-  loading: boolean;
-  error?: any;
-  login: () => void;
+  currentUser: any;
+  signInWithPopup: any;
+  isAuthenticated: boolean;
+  logOut: any;
 }
 
 const AuthContext = createContext<IAuthContext>({} as IAuthContext);
@@ -22,5 +23,71 @@ export const AuthProvider = ({
 }: {
   children: ReactNode;
 }): JSX.Element => {
-  return <></>;
+  const [currentUser, setCurrentUser] = useState<User>(null);
+
+  const { loginWithPopup, user, isLoading, error, isAuthenticated, logout } =
+    useAuth0();
+
+  // TODO: Change this to signin with redirect, i believe it is a better user experience
+  const signInWithPopup = useCallback(async () => {
+    try {
+      await loginWithPopup();
+
+      if (!isLoading) {
+        const data = {
+          auth0_id: user.sub.replace("|", " ").split(" ")[1],
+        };
+
+        const res = await fetch("http://localhost:4000/signup", {
+          method: "POST",
+          mode: "cors",
+          cache: "no-cache",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          referrerPolicy: "no-referrer",
+          body: JSON.stringify(data),
+        });
+        if (res) {
+          setCurrentUser(user);
+
+          return res.json();
+        }
+      }
+    } catch (e) {
+      // TODO: remove this and do a proper error handling
+      console.log(error);
+    }
+  }, [error, loginWithPopup, user, isLoading]);
+
+  const logOut = useCallback(() => {
+    logout();
+    setCurrentUser(null);
+  }, [logout, setCurrentUser]);
+
+  useEffect(() => {
+    // Check if the user already is logged in, if so, it will silent login
+    if (isAuthenticated) {
+      setCurrentUser(user);
+    }
+  }, [isAuthenticated, user]);
+
+  const memovedValue = useMemo(
+    () => ({
+      currentUser,
+      signInWithPopup,
+      isAuthenticated,
+      logOut,
+    }),
+    [currentUser, signInWithPopup, isAuthenticated, logOut]
+  );
+
+  return (
+    <AuthContext.Provider value={memovedValue}>{children}</AuthContext.Provider>
+  );
 };
+
+export function useAuth() {
+  return useContext(AuthContext);
+}
