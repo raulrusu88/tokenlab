@@ -1,8 +1,9 @@
-import { Dialog, Transition } from "@headlessui/react";
 import { useState } from "react";
+import { Input } from "../../components/Forms/Input";
+import { Select } from "../../components/Forms/Select";
 import { Line } from "../../components/Line";
-import * as CV from "./styles";
 import { useAuth } from "../../context/AuthContext";
+import * as CV from "./styles";
 
 interface ICMC {
   id: number;
@@ -25,8 +26,6 @@ interface CoinProps {
 
 export const CoinsView = ({ data }: CoinProps) => {
   const { isAuthenticated } = useAuth();
-
-  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -59,6 +58,15 @@ export const CoinsView = ({ data }: CoinProps) => {
   const price = (x: number) => formatter.format(parseFloat(x.toString()));
   const volume24h = (x: number) => abbreviateNumber(parseFloat(x.toString()));
 
+  const [selectValue, setSelectValue] = useState<number>(null);
+
+  const handleSelectValue = (n: number): void => {
+    setSelectValue(n);
+  };
+  // TODO: Select value does not work properly, as it should pass the data from the row it is used
+  // and when you click the button to add the trade, it should forward the selected value.
+  // as of now, it passes only 1, as it is from the Select component initial value
+
   return (
     <div className="mt-12">
       <CV.Layout>
@@ -75,9 +83,13 @@ export const CoinsView = ({ data }: CoinProps) => {
               <CV.TableHead text="Price" />
               <CV.TableHead text="24H Change(%)" />
               <CV.TableHead text="24H Volume(USD)" />
-              <CV.TableHead text="Leverage" />
-              <CV.TableHead text="Amount(USD)" />
-              {isAuthenticated && <CV.TableHead text="Long/Short" />}
+              {isAuthenticated && (
+                <>
+                  <CV.TableHead text="Leverage" />
+                  <CV.TableHead text="Amount(USD)" />
+                  <CV.TableHead text="Long/Short" />{" "}
+                </>
+              )}
             </CV.TableRow>
           </thead>
           <tbody>
@@ -88,14 +100,22 @@ export const CoinsView = ({ data }: CoinProps) => {
                 <CV.TableData>{price(d.quote.USD.price)}</CV.TableData>
                 <CV.TableData>{d.quote.USD.volume_change_24h}</CV.TableData>
                 <CV.TableData>{volume24h(d.quote.USD.volume_24h)}</CV.TableData>
-                {/* THis should be an input field, that is seen only when the user is Authenticated */}
-                <CV.TableData>1</CV.TableData>
-                {/* THis should be an input field, that is seen only when the user is Authenticated */}
-                <CV.TableData>$200</CV.TableData>
                 {isAuthenticated && (
-                  <CV.TableData>
-                    <CoinButton data={d} id={d.id} />
-                  </CV.TableData>
+                  <>
+                    <CV.TableData>
+                      <Select selectValue={(n) => handleSelectValue(n)} />
+                    </CV.TableData>
+                    <CV.TableData>
+                      <Input />
+                    </CV.TableData>
+                    <CV.TableData>
+                      <CoinButton
+                        data={d}
+                        id={d.id}
+                        selectValue={selectValue}
+                      />
+                    </CV.TableData>
+                  </>
                 )}
               </CV.TableRow>
             ))}
@@ -106,11 +126,20 @@ export const CoinsView = ({ data }: CoinProps) => {
   );
 };
 
-const CoinButton = ({ id, data }: { id?: string | number; data?: ICMC }) => {
+const CoinButton = ({
+  id,
+  data,
+  selectValue,
+}: {
+  id?: string | number;
+  data?: ICMC;
+  selectValue: number;
+}) => {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (id === data.id) {
       console.log(data);
+      console.log(selectValue);
     }
   };
   return (
