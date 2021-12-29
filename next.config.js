@@ -1,5 +1,8 @@
 module.exports = {
   reactStrictMode: true,
+  images: {
+    domains: ["assets.coingecko.com"],
+  },
   env: {
     auth0_domain: process.env.AUTH0_DOMAIN,
     auth0_client: process.env.AUTH0_CLIENT,
