@@ -57,7 +57,9 @@ export const Select = ({
           <div className="mt-1 relative">
             <Listbox.Button className="relative w-full bg-primary/50 border border-text/25 rounded-md shadow-sm pl-3 pr-5 py-2 text-left cursor-default focus:outline-none focus:ring-1  sm:text-sm">
               <span className="flex items-center">
-                <span className="ml-3 block truncate">{selected.amount}x</span>
+                <span className="ml-3 block truncate text-text">
+                  {selected.amount}x
+                </span>
               </span>
               <span className="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                 <SelectorIcon
