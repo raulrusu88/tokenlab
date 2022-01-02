@@ -1,7 +1,9 @@
 # Token Lab
 
-(Current stage - Alpha)
+_(Current stage - **Alpha**)_
 ![main image](/docs/main.jpg)
+
+_(Colors inspired by [IndieHackers](https://indiehackers.com))_
 
 ## Backend
 
