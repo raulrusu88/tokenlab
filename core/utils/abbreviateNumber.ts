@@ -1,4 +1,4 @@
-export const formatter = new Intl.NumberFormat("en-US", {
+const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
 });
@@ -14,7 +14,7 @@ const SI_PREFIXES = [
 ];
 
 // https://stackoverflow.com/questions/10599933/convert-long-number-into-abbreviated-string-in-javascript-with-a-special-shortn
-export const abbreviateNumber = (number: any) => {
+const abbreviateNumber = (number: any) => {
   if (number === 0) return number;
 
   let numberFixed: number | string;
@@ -25,3 +25,6 @@ export const abbreviateNumber = (number: any) => {
   }
   return `$${numberFixed}${tier?.symbol}`;
 };
+
+export const price = (x: number) => formatter.format(parseFloat(x.toString()));
+export const volume = (x: number) => abbreviateNumber(parseFloat(x.toString()));
