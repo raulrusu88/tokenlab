@@ -51,10 +51,12 @@ const Table = ({ children }: ChildProp) => (
 const TableRow = ({
   children,
   onClick,
-}: ChildProp & { onClick?: () => void }) => (
+  id,
+}: ChildProp & { onClick?: () => void; id?: string }) => (
   <tr
     className="border-b-2 border-b-primary/25 hover:bg-primary/25 cursor-pointer"
     onClick={onClick}
+    id={id}
   >
     {children}
   </tr>
