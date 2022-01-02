@@ -2,10 +2,13 @@ import "../styles/globals.css";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { AuthProvider } from "../core/context/AuthContext";
 
+import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 
 function MyApp({ Component, pageProps }) {
   const isSSR = typeof window !== "undefined";
+
+  const queryClient = new QueryClient();
 
   return (
     <Auth0Provider
@@ -15,10 +18,12 @@ function MyApp({ Component, pageProps }) {
       useRefreshTokens={true}
       cacheLocation="memory"
     >
-      <AuthProvider>
-        <Component {...pageProps} />
-      </AuthProvider>
-      <ReactQueryDevtools initialIsOpen={true} />
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Component {...pageProps} />
+        </AuthProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
     </Auth0Provider>
   );
 }
