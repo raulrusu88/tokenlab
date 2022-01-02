@@ -1,9 +1,13 @@
 import { Dialog, Transition } from "@headlessui/react";
 import React from "react";
-import { Checkbox } from "./Forms/Checkbox";
 
-export const AlphaBanner = () => {
-  const [open, setOpen] = React.useState(false);
+interface Props {
+  openModal: boolean;
+  data: any;
+}
+
+export const ModalCoin = ({ openModal = false, data }: Props) => {
+  const [open, setOpen] = React.useState(openModal);
 
   const handleModal = () => setOpen(!open);
 
@@ -38,20 +42,7 @@ export const AlphaBanner = () => {
                 Here are some of the features that need to be implemented or
                 are.
               </Dialog.Description>
-              <div className="flex flex-col">
-                <Checkbox checkbox text="Google Sign Up / Sign In" />
-                <Checkbox checkbox text="CMC Api with live data" />
-                <Checkbox checkbox text="Moving from CMC -> CoinGecko" />
-                <Checkbox checkbox text="Move everything into a Table" />
-                <Checkbox text="Refetching with React Query" />
-                <Checkbox text="React Table implementation" />
-                <Checkbox checkbox text="Show each crypto correct logo" />
-                <Checkbox text="User dashboard / portfolio" />
-                <Checkbox text="User dashboard trade history" />
-                <Checkbox text="Correctly save user trade in DB" />
-                <Checkbox text="Search for coins" />
-                <Checkbox text="Responsive layout" />
-              </div>
+              <div className="flex flex-col">{<pre>{data}</pre>}</div>
             </div>
           </div>
         </Dialog>

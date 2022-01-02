@@ -1,3 +1,4 @@
+import Image from "next/image";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { Coin } from "../../components/Coin/Coin";
@@ -6,30 +7,13 @@ import { Select } from "../../components/Forms/Select";
 import { Line } from "../../components/Line";
 import { useAuth } from "../../context/AuthContext";
 import * as CV from "./styles";
+import { ModalCoin } from "../../components/Modal/ModalCoin";
 
-interface ICMC {
-  id: number;
-  name: string;
-  symbol: string;
-  slug?: string;
-  cmc_rank: number;
-  quote: {
-    USD: {
-      price: number;
-      volume_24h: number;
-      volume_change_24h: number;
-    };
-  };
-}
-
-interface CoinProps {
-  data: ICMC[];
-}
-
-export const CoinsView = ({ data }: CoinProps) => {
+export const CoinsView = () => {
   const { isAuthenticated } = useAuth();
 
   const [coins, setCoins] = useState([]);
+  const [modal, setModal] = useState(false);
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -80,6 +64,10 @@ export const CoinsView = ({ data }: CoinProps) => {
       });
   }, []);
 
+  const handleOpen = () => {
+    setModal(!open);
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -92,22 +80,84 @@ export const CoinsView = ({ data }: CoinProps) => {
           <CV.Search />
         </CV.Header>
         <Line />
-        <div className="flex flex-col">
-          {coins.map((coin, index) => (
-            <Coin
-              key={coin.id}
-              {...coin}
-              index={index + 1}
-              current_price={price(coin.current_price)}
-              market_cap={volume24h(coin.market_cap)}
-              high_24h={price(coin.high_24h)}
-              low_24h={price(coin.low_24h)}
-              price_change_percentage_24h={coin.price_change_percentage_24h.toFixed(
-                2
-              )}
-            />
-          ))}
-        </div>
+        <CV.Table>
+          <thead>
+            <CV.TableRow>
+              <CV.TableHead text="#" className="w-16" />
+              <CV.TableHead text="Name" className="w-max" />
+              <CV.TableHead text="Price" />
+              <CV.TableHead text="Market Cap" />
+              <CV.TableHead text="High 24H" />
+              <CV.TableHead text="Low 24H" />
+              <CV.TableHead text="24H % Change" />
+              <CV.TableHead text="Leverage" />
+              <CV.TableHead text="Buy Amount ($)" />
+            </CV.TableRow>
+          </thead>
+          <tbody>
+            {coins.map((d, index) => (
+              <>
+                <CV.TableRow key={d.id} onClick={() => console.log(d)}>
+                  <CV.TableData>{index + 1}</CV.TableData>
+                  <CV.TableData className="w-max">
+                    <div className="flex ">
+                      <Image
+                        src={d.image}
+                        alt={d.name}
+                        layout="fixed"
+                        width="24"
+                        height="24"
+                      />
+                      <p className="text-text font-semibold ml-2">{d.name}</p>
+                      <p className="text-text/50 font-base ml-1">
+                        {d.symbol.toUpperCase()}
+                      </p>
+                    </div>
+                  </CV.TableData>
+                  <CV.TableData>
+                    <p className="text-text font-semibold ">
+                      {price(d.current_price)}
+                    </p>
+                  </CV.TableData>
+                  <CV.TableData>
+                    <p className="text-text font-semibold">
+                      {volume24h(d.market_cap)}
+                    </p>
+                  </CV.TableData>
+                  <CV.TableData>
+                    <p className="text-text font-semibold">
+                      {price(d.high_24h)}
+                    </p>
+                  </CV.TableData>
+                  <CV.TableData>
+                    <p className="text-text font-semibold">
+                      {price(d.low_24h)}
+                    </p>
+                  </CV.TableData>
+                  <CV.TableData>
+                    <p className="text-text font-semibold ">
+                      <span
+                        className={
+                          d.price_change_percentage_24h > 0
+                            ? "text-positive"
+                            : "text-negative"
+                        }
+                      >
+                        {d.price_change_percentage_24h.toFixed(2)}%
+                      </span>
+                    </p>
+                  </CV.TableData>
+                  <CV.TableData>
+                    <Select selectValue={(n) => handleSelectValue(n)} />
+                  </CV.TableData>
+                  <CV.TableData>
+                    <Input />
+                  </CV.TableData>
+                </CV.TableRow>
+              </>
+            ))}
+          </tbody>
+        </CV.Table>
       </CV.Layout>
     </div>
   );
@@ -115,17 +165,15 @@ export const CoinsView = ({ data }: CoinProps) => {
 
 const CoinButton = ({
   id,
-  data,
   selectValue,
 }: {
   id?: string | number;
-  data?: ICMC;
   selectValue: number;
 }) => {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (id === data.id) {
-      console.log(data);
+    if (id === id) {
+      console.log([]);
       console.log(selectValue);
     }
   };
@@ -138,50 +186,4 @@ const CoinButton = ({
 
 // TODO: Change it to a table
 // const Table = () => (
-//   <CV.Table>
-//           <thead>
-//             <CV.TableRow>
-//               <CV.TableHead text="#" />
-//               <CV.TableHead text="Name" />
-//               <CV.TableHead text="Price" />
-//               <CV.TableHead text="24H Change(%)" />
-//               <CV.TableHead text="24H Volume(USD)" />
-//               {isAuthenticated && (
-//                 <>
-//                   <CV.TableHead text="Leverage" />
-//                   <CV.TableHead text="Amount(USD)" />
-//                   <CV.TableHead text="Long/Short" />{" "}
-//                 </>
-//               )}
-//             </CV.TableRow>
-//           </thead>
-//           <tbody>
-//             {data.map((d) => (
-//               <CV.TableRow key={d.id}>
-//                 <CV.TableData>{d.cmc_rank}</CV.TableData>
-//                 <CV.TableData>{d.name}</CV.TableData>
-//                 <CV.TableData>{price(d.quote.USD.price)}</CV.TableData>
-//                 <CV.TableData>{d.quote.USD.volume_change_24h}</CV.TableData>
-//                 <CV.TableData>{volume24h(d.quote.USD.volume_24h)}</CV.TableData>
-//                 {isAuthenticated && (
-//                   <>
-//                     <CV.TableData>
-//                       <Select selectValue={(n) => handleSelectValue(n)} />
-//                     </CV.TableData>
-//                     <CV.TableData>
-//                       <Input />
-//                     </CV.TableData>
-//                     <CV.TableData>
-//                       <CoinButton
-//                         data={d}
-//                         id={d.id}
-//                         selectValue={selectValue}
-//                       />
-//                     </CV.TableData>
-//                   </>
-//                 )}
-//               </CV.TableRow>
-//             ))}
-//           </tbody>
-//         </CV.Table>
-// )
+// // )

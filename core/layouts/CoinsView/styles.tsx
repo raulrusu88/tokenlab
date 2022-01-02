@@ -1,11 +1,18 @@
-import { ReactNode } from "react";
+import {
+  ReactNode,
+  CSSProperties,
+  HTMLAttributes,
+  DetailedHTMLProps,
+  ThHTMLAttributes,
+} from "react";
 
 type ChildProp = {
   children: ReactNode;
 };
 
 type TextProp = {
-  text: string;
+  text?: string;
+  className?: any;
 };
 
 const Layout = ({ children }: ChildProp) => (
@@ -45,15 +52,20 @@ const TableRow = ({
   children,
   onClick,
 }: ChildProp & { onClick?: () => void }) => (
-  <tr className="border-b-2 border-b-primary/25" onClick={onClick}>
+  <tr
+    className="border-b-2 border-b-primary/25 hover:bg-primary/25 cursor-pointer"
+    onClick={onClick}
+  >
     {children}
   </tr>
 );
 
-const TableHead = ({ text }: TextProp) => <th>{text}</th>;
+const TableHead = ({ text, className }: TextProp) => (
+  <th className={className}>{text}</th>
+);
 
-const TableData = ({ children }: ChildProp) => (
-  <td className="text-center py-3">{children}</td>
+const TableData = ({ children, className }: ChildProp & TextProp) => (
+  <td className={"text-center py-3 5" + className}>{children}</td>
 );
 
 export { Layout, Header, Title, Search, Table, TableRow, TableHead, TableData };

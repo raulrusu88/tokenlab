@@ -67,7 +67,7 @@ export const Coin = (props: Props) => {
                 : "text-negative"
             }
           >
-            {price_change_percentage_24h}
+            {price_change_percentage_24h}%
           </span>
         </p>
       </div>
