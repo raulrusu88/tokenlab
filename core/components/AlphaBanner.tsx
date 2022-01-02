@@ -43,7 +43,7 @@ export const AlphaBanner = () => {
                 <Checkbox checkbox text="CMC Api with live data" />
                 <Checkbox checkbox text="Moving from CMC -> CoinGecko" />
                 <Checkbox checkbox text="Move everything into a Table" />
-                <Checkbox text="Refetching with React Query" />
+                <Checkbox checkbox text="Refetching with React Query" />
                 <Checkbox text="React Table implementation" />
                 <Checkbox checkbox text="Show each crypto correct logo" />
                 <Checkbox text="User dashboard / portfolio" />
