@@ -2,6 +2,8 @@ import "../styles/globals.css";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { AuthProvider } from "../core/context/AuthContext";
 
+import { ReactQueryDevtools } from "react-query/devtools";
+
 function MyApp({ Component, pageProps }) {
   const isSSR = typeof window !== "undefined";
 
@@ -16,6 +18,7 @@ function MyApp({ Component, pageProps }) {
       <AuthProvider>
         <Component {...pageProps} />
       </AuthProvider>
+      <ReactQueryDevtools initialIsOpen={true} />
     </Auth0Provider>
   );
 }
