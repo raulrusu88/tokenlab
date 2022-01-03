@@ -25,41 +25,50 @@ export const AuthProvider = ({
 }): JSX.Element => {
   const [currentUser, setCurrentUser] = useState<User>(null);
 
-  const { loginWithPopup, user, isLoading, error, isAuthenticated, logout } =
-    useAuth0();
+  const {
+    loginWithRedirect,
+    user,
+    isLoading,
+    error,
+    isAuthenticated,
+    logout,
+    getAccessTokenSilently,
+  } = useAuth0();
 
   // TODO: Change this to signin with redirect, i believe it is a better user experience
   const signInWithPopup = useCallback(async () => {
     try {
-      await loginWithPopup();
+      await loginWithRedirect();
 
-      if (!isLoading) {
-        const data = {
-          auth0_id: user.sub.replace("|", " ").split(" ")[1],
-        };
+      const token = await getAccessTokenSilently();
 
-        const res = await fetch("http://localhost:4000/signup", {
-          method: "POST",
-          mode: "cors",
-          cache: "no-cache",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          referrerPolicy: "no-referrer",
-          body: JSON.stringify(data),
-        });
-        if (res) {
-          setCurrentUser(user);
+      console.log(token);
 
-          return res.json();
-        }
+      const data = {
+        auth0_id: user.sub.replace("|", " ").split(" ")[1],
+      };
+
+      const res = await fetch("http://localhost:4000/signup", {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify(data),
+      });
+      if (res) {
+        setCurrentUser(user);
+
+        return res.json();
       }
     } catch (e) {
       // TODO: remove this and do a proper error handling
       console.log(error);
     }
-  }, [error, loginWithPopup, user, isLoading]);
+  }, [error, loginWithRedirect, user, isLoading]);
 
   const logOut = useCallback(() => {
     logout();

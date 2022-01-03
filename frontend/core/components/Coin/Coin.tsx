@@ -74,9 +74,7 @@ export const Coin = (props: Props) => {
       <div className="w-28">
         <Select selectValue={(n) => console.log(n)} />
       </div>
-      <div className="w-28">
-        <Input />
-      </div>
+      <div className="w-28">{/* <Input /> */}</div>
     </div>
   );
 };
