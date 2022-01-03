@@ -5,10 +5,6 @@ _(Current stage - **Alpha**)_
 
 _(Colors inspired by [IndieHackers](https://indiehackers.com))_
 
-## Backend
-
-**[Tokenlab Backend Repository](https://github.com/raulrusu88/tokenlab-backend)**
-
 ## How to run it:
 
 ### Install dependecies
