@@ -1,11 +1,11 @@
 import React from "react";
 import Link from "next/link";
-import { Button } from "../Buttons/Button";
+import { Button } from "@components/Buttons/Button";
 import { Logo } from "./Logo";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@context/AuthContext";
 
 export const Navigation = () => {
-  const { signInWithPopup, currentUser, isAuthenticated, logOut } = useAuth();
+  const { isAuthenticated, logOut } = useAuth();
 
   return (
     <nav className="w-full h-16 flex items-center text-text">
@@ -26,7 +26,8 @@ export const Navigation = () => {
             </>
           ) : (
             <>
-              <Button text="Sign In" onClick={signInWithPopup} />
+              <Button text="Sign In" href="/auth/signin" />
+              <Button text="Sign Up" href="/auth/signup" />
             </>
           )}
         </div>

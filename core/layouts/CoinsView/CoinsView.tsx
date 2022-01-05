@@ -1,14 +1,13 @@
 import Image from "next/image";
-import axios from "axios";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useCallback, useState } from "react";
+import { Button } from "../../components/Buttons/Button";
 import { Input } from "../../components/Forms/Input";
 import { Select } from "../../components/Forms/Select";
 import { Line } from "../../components/Line";
 import { useAuth } from "../../context/AuthContext";
-import * as CV from "./styles";
 import { price, volume } from "../../utils/abbreviateNumber";
 import { useGetCurrentData } from "../../utils/useApi";
-import { Button } from "../../components/Buttons/Button";
+import * as CV from "./styles";
 
 export const CoinsView = () => {
   const { isAuthenticated } = useAuth();
@@ -33,10 +32,6 @@ export const CoinsView = () => {
   const handleSelectValue = (n: number): void => {
     setSelectValue(n);
   };
-
-  useEffect(() => {
-    console.log(getCoin);
-  }, [data, getCoin]);
 
   return (
     <div className="mt-12">
