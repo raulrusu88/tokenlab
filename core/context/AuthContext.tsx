@@ -44,39 +44,52 @@ export const AuthProvider = ({
   const router = useRouter();
 
   const createUserWithEmailAndPass = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, password: string, password_check: string) => {
       try {
         setIsLoading(true);
-        setPersistence(auth, browserSessionPersistence).then(async () => {
-          await createUserWithEmailAndPassword(auth, email, password).then(
-            async (credentials) => {
-              const user = credentials.user;
+        if (password !== password_check) {
+          setError("Please check your credentials!");
+          console.log(error);
+        } else {
+          setPersistence(auth, browserSessionPersistence).then(async () => {
+            await createUserWithEmailAndPassword(auth, email, password).then(
+              async (credentials) => {
+                const user = credentials.user;
 
-              if (user) {
-                setCurrentUser(user);
-                setIsAuthenicated(true);
+                if (user) {
+                  setCurrentUser(user);
+                  setIsAuthenicated(true);
 
-                await setDoc(
-                  doc(firestore, "users", user.uid),
-                  {
-                    _id: user.uid,
-                    email: user.email,
-                  },
-                  { merge: true }
-                )
-                  .then(() => {
-                    setIsLoading(false);
-                    router.push("/");
-                  })
-                  .catch((e) => console.log(e));
+                  if (password !== password_check) {
+                    setError("Please check again your credentials!");
+                  } else {
+                    await setDoc(
+                      doc(firestore, "users", user.uid),
+                      {
+                        _id: user.uid,
+                        email: user.email,
+                        displayName: user.email.slice(
+                          0,
+                          user.email.indexOf("@")
+                        ),
+                      },
+                      { merge: true }
+                    )
+                      .then(() => {
+                        setIsLoading(false);
+                        router.push("/");
+                      })
+                      .catch((e) => console.log(e));
+                  }
+                }
+                if (error && !user) {
+                  console.error(error);
+                  router.push("/auth/signin");
+                }
               }
-              if (error && !user) {
-                console.error(error);
-                router.push("/auth/signin");
-              }
-            }
-          );
-        });
+            );
+          });
+        }
       } catch (e) {
         setError(e);
         // TODO: remove this and do a proper error handling
@@ -129,9 +142,6 @@ export const AuthProvider = ({
   }, [router]);
 
   useEffect(() => {
-    // TODO: Check if the current token is active and if it is, set the isAuth to true and set the the user
-    // and set isLoading also.
-
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setIsAuthenicated(true);
