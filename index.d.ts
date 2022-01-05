@@ -25,4 +25,5 @@ interface GetCoinProp {
   current_price: number;
   type: "long" | "short";
   amount: number;
+  leverage?: number;
 }
